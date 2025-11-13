@@ -3,219 +3,395 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hướng dẫn cài đặt và sử dụng UNGHIATOOL XWORLD trên Android (Termux)</title>
-    <!-- Thư viện Tailwind CSS để tạo giao diện đẹp mắt và responsive -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Hướng Dẫn Chạy Tool UnghiaXworld Trên Android - Termux</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
+        /* Biến CSS Tối Ưu */
+        :root {
+            --primary-color: #1976D2; /* Google Blue */
+            --secondary-color: #388E3C; /* Darker Green for Copy */
+            --danger-color: #D32F2F; /* Dark Red */
+            --background-color: #ECEFF1; /* Light Gray Background */
+            --card-background: #ffffff;
+            --border-radius: 10px;
+            --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --code-bg: #263238; /* Dark Code Background */
+            --code-color: #A5D6A7; /* Light Green Code Text */
+        }
+
+        /* Thiết lập chung */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
+            font-family: 'Roboto', 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            line-height: 1.6;
+            color: #424242;
         }
-        .code-block {
-            background-color: #1f2937;
-            color: #f9fafb;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            position: relative;
+
+        .container {
+            max-width: 800px; 
+            margin: 20px auto;
+            background: var(--card-background);
+            padding: 20px; /* Giảm padding trên mobile */
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        /* Tiêu đề */
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        h2 {
+            color: #212121;
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            padding: 8px 10px;
+            border-left: 5px solid var(--secondary-color);
+            background-color: #F5F5F5; /* Nền nhẹ cho phần tiêu đề bước */
+            border-radius: 4px;
+        }
+
+        /* Cảnh báo (Note) */
+        .note {
+            background-color: #FFEBEE; /* Light Red/Pink */
+            color: var(--danger-color); 
+            padding: 15px;
+            border: 1px solid var(--danger-color);
+            border-radius: var(--border-radius);
+            margin-bottom: 25px;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        .note strong {
+            color: var(--danger-color);
+        }
+        
+        /* Bảng lệnh */
+        .command-section {
+            background-color: #ffffff;
+            border-radius: var(--border-radius);
+            border: 1px solid #E0E0E0;
+            padding: 5px; /* Giảm padding */
+        }
+
+        .command-item {
+            display: flex;
+            flex-direction: column;
+            padding: 15px 10px;
+            border-bottom: 1px solid #EEEEEE;
+        }
+
+        .command-item:last-child {
+            border-bottom: none;
+        }
+        
+        .command-row {
+            display: flex;
+            align-items: center;
+        }
+
+        .step-number {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1em;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .command-description {
+            font-size: 0.85em;
+            color: #757575;
+            display: block;
+            margin-top: 5px;
+            padding-left: 28px; 
+        }
+        
+        /* Ô lệnh */
+        .command-cell {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background-color: var(--code-bg);
+            color: var(--code-color);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.9em;
             overflow-x: auto;
-            white-space: pre-wrap;
-            word-wrap: break-word;
+            white-space: nowrap;
+            display: block;
+            flex-grow: 1;
+            margin-top: 8px; /* Xuống dòng sau step-number trên mobile */
         }
+
+        /* Nút Copy */
         .copy-button {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            background-color: #4b5563;
+            background-color: var(--secondary-color);
             color: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.375rem;
-            font-size: 0.875rem;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.2s ease-in-out;
+            font-size: 0.85em;
+            font-weight: 600;
+            flex-shrink: 0;
+            margin-top: 10px; 
+            align-self: flex-end; 
         }
+
         .copy-button:hover {
-            background-color: #6b7280;
+            background-color: #2E7D32;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Thông báo thành công */
+        .success-message {
+            text-align: center;
+            padding: 20px;
+            background-color: #E8F5E9; /* Light Green Success */
+            color: #2E7D32; 
+            border: 1px solid #C8E6C9;
+            border-radius: var(--border-radius);
+            margin-top: 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        
+        /* Danh sách */
+        ul {
+            padding-left: 0;
+            margin-bottom: 20px;
+            list-style: none;
+        }
+        
+        ul li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 25px;
+            color: #424242;
+        }
+        
+        ul li::before {
+            content: '\f058'; /* Icon Check Circle Solid */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--secondary-color);
+            font-size: 1em;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #CFD8DC;
+            margin: 25px 0;
+        }
+        
+        /* Responsive: Tối ưu cho PC/Tablet (màn hình rộng hơn 600px) */
+        @media (min-width: 600px) {
+            .container {
+                padding: 30px;
+            }
+
+            .command-item {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                padding: 15px 0;
+            }
+            
+            .command-row {
+                width: 70%; /* Dành không gian cho nút copy */
+            }
+
+            .command-cell {
+                margin-top: 0;
+                order: 2; /* Đặt lệnh sau số bước */
+            }
+
+            .step-number {
+                order: 1;
+            }
+            
+            .command-description {
+                display: none; /* Ẩn mô tả nhỏ trên PC */
+            }
+            
+            .copy-button {
+                margin-top: 0;
+                margin-left: 15px;
+                align-self: center;
+                order: 3;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-100 p-4 sm:p-8">
+<body>
 
-    <div class="max-w-4xl mx-auto bg-white p-6 sm:p-8 rounded-2xl shadow-2xl">
+    <div class="container">
+        
 
-        <!-- Tiêu đề trang -->
-        <h1 class="text-center text-2xl sm:text-3xl font-bold text-gray-800 mb-8">
-            Hướng dẫn cài đặt và sử dụng UNGHIATOOL XWORLD trên Android (Termux)
-        </h1>
+        <h1>📲 Hướng Dẫn Chạy UnghiaXworld <br> Trên Điện Thoại Android (Termux)</h1>
+        
 
-        <!-- Giới thiệu -->
-        <div class="mb-8">
-            <h2 class="text-xl sm:text-2xl font-semibold text-gray-700 mb-4">
-                1. Giới thiệu
-            </h2>
-            <p class="text-gray-600 leading-relaxed">
-                Chào mừng bạn đến với hướng dẫn chi tiết về cách thiết lập và chạy tool UNGHIATOOL XWORLD trên Android bằng ứng dụng Termux. Termux là một trình giả lập terminal mạnh mẽ cho phép bạn sử dụng các công cụ dòng lệnh Linux trên điện thoại của mình.
-            </p>
-        </div>
+        <hr>
 
-        <!-- Yêu cầu -->
-        <div class="mb-8">
-            <h2 class="text-xl sm:text-2xl font-semibold text-gray-700 mb-4">
-                2. Yêu cầu và cài đặt Termux
-            </h2>
-            <p class="text-gray-600 leading-relaxed mb-4">
+        <h2><i class="fas fa-book"></i> 1. Giới thiệu</h2>
+        <p>Chào mừng bạn đến với hướng dẫn chi tiết về cách thiết lập và chạy tool UNGHIATOOL XWORLD trên Android bằng ứng dụng Termux. Termux là một trình giả lập terminal mạnh mẽ cho phép bạn sử dụng các công cụ dòng lệnh Linux trên điện thoại của mình.</p>
+        <h2><i class="fas fa-mobile-alt"></i> 2. Yêu cầu và cài đặt Termux</h2>
+        <p class="text-gray-600 leading-relaxed mb-4">
                 Đầu tiên, bạn cần tải và cài đặt Termux từ **F-Droid**, vì phiên bản trên Google Play Store không được cập nhật thường xuyên.
                 <a href="https://f-droid.org/en/packages/com.termux/" target="_blank" class="text-blue-500 hover:underline font-medium">Tải Termux từ F-Droid tại đây</a>
             </p>
             <p class="text-gray-600 leading-relaxed">
                 Sau khi cài đặt, bạn mở Termux và chờ quá trình khởi động hoàn tất.
             </p>
-        </div>
+        <hr>
 
-        <!-- Các bước cài đặt -->
-        <div class="mb-8">
-            <h2 class="text-xl sm:text-2xl font-semibold text-gray-700 mb-4">
-                3. Cài đặt các thư viện cần thiết
-            </h2>
-            <p class="text-gray-600 leading-relaxed mb-4">
-                Trong Termux, bạn nhập các lệnh sau để cài đặt Python và các thư viện cần thiết.
-            </p>
-            <ol class="list-decimal list-inside space-y-4 text-gray-600">
-                <li>
-                    Cập nhật các gói hệ thống:
-                    <div class="code-block mt-2">
-                        <pre id="code1">pkg update</pre>
-                        <button class="copy-button" onclick="copyToClipboard('code1')">Copy</button>
-                    </div>
-                </li>
-                <li>
-                    Cài đặt Python và `pip` (trình quản lý gói của Python):
-                    <div class="code-block mt-2">
-                        <pre id="code2">pkg install python</pre>
-                        <button class="copy-button" onclick="copyToClipboard('code2')">Copy</button>
-                    </div>
-                </li>
-                <li>
-                    Cài đặt các thư viện Python cho tool:
-                    <div class="code-block mt-2">
-                        <pre id="code3">pip install requests psutil colorama websocket-client rich</pre>
-                        <button class="copy-button" onclick="copyToClipboard('code3')">Copy</button>
-                    </div>
-                    <p class="text-sm mt-2">
-                        Lệnh này sẽ tải xuống và cài đặt tất cả các thư viện mà tool yêu cầu.
-                    </p>
-                </li>
-            </ol>
-        </div>
+        <h2><i class="fas fa-terminal"></i> 3. Cài đặt các thư viện cần thiết</h2>
 
-        <!-- Tải tool -->
-        <div class="mb-8">
-            <h2 class="text-xl sm:text-2xl font-semibold text-gray-700 mb-4">
-                4. Tải tool UNGHIATOOL XWORLD
-            </h2>
-            <p class="text-gray-600 leading-relaxed mb-4">
-                Để tải file tool, bạn cần cài đặt `curl` và sau đó sử dụng nó để tải file.
-            </p>
-            <ol class="list-decimal list-inside space-y-4 text-gray-600">
-                <li>
-                    Cài đặt curl:
-                    <div class="code-block mt-2">
-                        <pre id="code4">pkg install curl</pre>
-                        <button class="copy-button" onclick="copyToClipboard('code4')">Copy</button>
-                    </div>
-                </li>
-                <li>
-                    Tải file tool:
-                    <div class="code-block mt-2">
-                        <pre id="code5">curl -o UNGHIA-TOOL.py https://raw.githubusercontent.com/UnghiaTool11/UnghiaTool11.github.io/refs/heads/main/UNGHIA-TOOL.py</pre>
-                        <button class="copy-button" onclick="copyToClipboard('code5')">Copy</button>
-                    </div>
-                    <p class="text-sm mt-2">
-                        Lệnh này sẽ tải file từ GitHub và lưu nó dưới tên là <strong>UNGHIA-TOOL.py</strong>.
-                    </p>
-                </li>
-            </ol>
-        </div>
-
-        <!-- Hướng dẫn chạy -->
-        <div class="mb-8">
-            <h2 class="text-xl sm:text-2xl font-semibold text-gray-700 mb-4">
-                5. Cách chạy tool
-            </h2>
-            <p class="text-gray-600 leading-relaxed mb-4">
-                Sau khi tải file thành công, bạn chỉ cần chạy nó bằng lệnh sau:
-            </p>
-            <div class="code-block">
-                <pre id="code6">python UNGHIA-TOOL.py</pre>
-                <button class="copy-button" onclick="copyToClipboard('code6')">Copy</button>
+        <div class="command-section">
+            <div class="command-item">
+                <div class="command-row">
+                    <span class="step-number">3.1</span>
+                    <span class="command-cell" data-command="pkg update
+">pkg update
+</span>
+                </div>
+                <button class="copy-button" data-command="pkg update">Copy</button>
             </div>
-            <p class="text-sm text-gray-600 mt-2">
-                Nếu mọi thứ đều đúng, tool sẽ bắt đầu chạy.
-            </p>
         </div>
-
-        <!-- Lỗi thường gặp và cách khắc phục -->
-        <div>
-            <h2 class="text-xl sm:text-2xl font-semibold text-gray-700 mb-4">
-                6. Lỗi thường gặp và cách khắc phục
-            </h2>
-            <div class="space-y-6">
-                <!-- Lỗi 1 -->
-                <div class="p-6 bg-red-50 rounded-lg border border-red-200">
-                    <h3 class="text-lg font-bold text-red-700 mb-2">Lỗi 1: command not found: curl</h3>
-                    <p class="text-red-600">
-                        Lỗi này xảy ra khi gói `curl` chưa được cài đặt trong Termux.
-                    </p>
-                    <div class="code-block mt-2">
-                        <pre id="code7">pkg install curl</pre>
-                        <button class="copy-button" onclick="copyToClipboard('code7')">Copy</button>
-                    </div>
-                    <p class="text-sm mt-2 text-red-600">
-                        <strong>Cách khắc phục:</strong> Chạy lệnh này để cài đặt `curl`.
-                    </p>
+        <div class="command-section">
+            <div class="command-item">
+                <div class="command-row">
+                    <span class="step-number">3.2</span>
+                    <span class="command-cell" data-command="pkg install python
+">pkg install python
+</span>
                 </div>
-
-                <!-- Lỗi 2 -->
-                <div class="p-6 bg-red-50 rounded-lg border border-red-200">
-                    <h3 class="text-lg font-bold text-red-700 mb-2">Lỗi 2: No module named 'requests'</h3>
-                    <p class="text-red-600">
-                        Đây là lỗi khi một trong các thư viện cần thiết chưa được cài đặt thành công.
-                    </p>
-                    <div class="code-block mt-2">
-                        <pre id="code8">pip install requests bs4 colorama psutil</pre>
-                        <button class="copy-button" onclick="copyToClipboard('code8')">Copy</button>
-                    </div>
-                    <p class="text-sm mt-2 text-red-600">
-                        <strong>Cách khắc phục:</strong> Chạy lại lệnh cài đặt thư viện ở bước 3.
-                    </p>
+                <button class="copy-button" data-command="pkg install python">Copy</button>
+            </div>
+        </div>
+         <div class="command-section">
+            <div class="command-item">
+                <div class="command-row">
+                    <span class="step-number">3.3</span>
+                    <span class="command-cell" data-command="pip install requests psutil colorama websocket-client rich
+">pip install requests psutil colorama websocket-client rich
+</span>
                 </div>
+                <button class="copy-button" data-command="pip install requests psutil colorama websocket-client rich">Copy</button>
+            </div>
+        </div>
+        <h2><i class="fas fa-download"></i> 4. Tải Unghia_Enc</h2>
+
+        <div class="command-section">
+            <div class="command-item">
+                <div class="command-row">
+                    <span class="step-number">4.1</span>
+                    <span class="command-cell" data-command="pkg install curl
+">pkg install curl
+</span>
+                </div>
+                <button class="copy-button" data-command="pkg install curl">Copy</button>
+            </div>
+        </div>
+        <div class="command-section">
+            <div class="command-item">
+                <div class="command-row">
+                    <span class="step-number">4.2</span>
+                    <span class="command-cell" data-command="curl -o UnghiaXworld.py https://raw.githubusercontent.com/UnghiaTool11/UnghiaTool11.github.io/refs/heads/main/obf-UNGHIA-TOOL.py
+">curl -o UnghiaXworld.py https://raw.githubusercontent.com/UnghiaTool11/UnghiaTool11.github.io/refs/heads/main/obf-UNGHIA-TOOL.py
+</span>
+                </div>
+                <button class="copy-button" data-command="curl -o UnghiaXworld.py https://raw.githubusercontent.com/UnghiaTool11/UnghiaTool11.github.io/refs/heads/main/obf-UNGHIA-TOOL.py">Copy</button>
             </div>
         </div>
 
+        <h2><i class="fas fa-play-circle"></i> 5. Khởi Chạy Tool</h2>
+        <p>Khởi động công cụ và bắt đầu sử dụng.</p>
+
+        <div class="command-section">
+            <div class="command-item">
+                <div class="command-row">
+                    <span class="step-number">5.1</span>
+                    <span class="command-cell" data-command="python UnghiaXworld.py">python UnghiaXworld.py</span>
+                </div>
+                <button class="copy-button" data-command="python UnghiaXworld.py">Copy</button>
+            </div>
+        </div>
+        <div class="success-message">
+        <i class="fas fa-check-circle"></i>Khởi chạy công cụ.
+            <div class="success-message">
+                <i class="fas fa-check-circle"></i> **HOÀN THÀNH!** Bạn đã sẵn sàng để sử dụng tool UnghiaXworld.
+            </div>
+        </div>
     </div>
 
-    <!-- JavaScript để xử lý chức năng copy -->
     <script>
-        function copyToClipboard(elementId) {
-            const codeBlock = document.getElementById(elementId);
-            const textToCopy = codeBlock.innerText;
-
-            const tempInput = document.createElement('textarea');
-            tempInput.value = textToCopy;
-            document.body.appendChild(tempInput);
-            tempInput.select();
+        document.addEventListener('DOMContentLoaded', function() {
+            const copyButtons = document.querySelectorAll('.copy-button');
             
-            try {
-                document.execCommand('copy');
-                alert('Đã sao chép lệnh vào clipboard!');
-            } catch (err) {
-                alert('Không thể sao chép: ' + err);
-            }
+            copyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const commandItem = this.closest('.command-item');
+                    const commandCell = commandItem.querySelector('.command-cell');
+                    const command = commandCell.getAttribute('data-command');
+                    
+                    if (navigator.clipboard) {
+                        navigator.clipboard.writeText(command).then(() => {
+                            const originalText = this.textContent;
+                            const originalBg = this.style.backgroundColor;
 
-            document.body.removeChild(tempInput);
-        }
+                            this.textContent = '✅ Đã Copy!';
+                            this.style.backgroundColor = '#28a745'; 
+                            
+                            setTimeout(() => {
+                                this.textContent = originalText;
+                                this.style.backgroundColor = originalBg || 'var(--secondary-color)';
+                            }, 1500);
+                        }).catch(err => {
+                            console.error('Không thể copy: ', err);
+                            alert('Không thể tự động copy. Vui lòng sao chép thủ công: ' + command);
+                        });
+                    } else {
+                        const textArea = document.createElement("textarea");
+                        textArea.value = command;
+                        textArea.style.position = "fixed";
+                        textArea.style.top = "0";
+                        textArea.style.left = "0";
+                        textArea.style.opacity = "0"; 
+                        document.body.appendChild(textArea);
+                        textArea.focus();
+                        textArea.select();
+                        
+                        try {
+                            document.execCommand('copy');
+                            const originalText = this.textContent;
+                            this.textContent = '✅ Đã Copy!';
+                            this.style.backgroundColor = '#28a745';
+                            setTimeout(() => {
+                                this.textContent = originalText;
+                                this.style.backgroundColor = 'var(--secondary-color)';
+                            }, 1500);
+                        } catch (err) {
+                            console.error('Không thể copy: ', err);
+                            alert('Không thể tự động copy. Vui lòng sao chép thủ công: ' + command);
+                        }
+                        document.body.removeChild(textArea);
+                    }
+                });
+            });
+        });
     </script>
 
 </body>
